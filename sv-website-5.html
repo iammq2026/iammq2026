@@ -2233,9 +2233,6 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
     var panel = document.getElementById("customizePanel");
     if(!panel || !panel.contains(e.target)) return;
 
-    // Never let page/editor click-routing handlers consume Customize UI clicks.
-    e.stopPropagation();
-
     var el = e.target.closest ? e.target.closest("button,input,select,textarea") : null;
     if(!el) return;
 
@@ -2260,6 +2257,8 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
 
     if(el.id === "cpEditPage" && typeof window.ezSetEditMode === "function"){
       window.ezSetEditMode();
+      e.stopImmediatePropagation();
+      return;
     }
   }, true);
 })();

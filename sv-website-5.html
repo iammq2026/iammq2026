@@ -2226,10 +2226,11 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
 <script id="ez-customize-click-bridge">
 (function(){
   "use strict";
-  // Dedicated editor-UI click bridge. This runs independently of the main
-  // customizer event routing so the Customize panel remains interactive even
-  // if a page-level editor handler captures clicks.
-  document.addEventListener("click", function(e){
+  // Protect only the editor-panel controls that otherwise lose the click to
+  // document-level editor routing. For all other controls, temporarily remove
+  // this bridge and replay the native click so the original addEventListener
+  // handlers receive the event exactly as they did in the working source file.
+  function bridgeHandler(e){
     var panel = document.getElementById("customizePanel");
     if(!panel || !panel.contains(e.target)) return;
 
@@ -2261,21 +2262,20 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
       return;
     }
 
-    // Replay all other Customize buttons through their original listeners.
-    // This keeps Phase 2, Custom Code, IDs, Save/Copy/Reset, Undo/Redo, etc.
-    // working even if another document-level capture listener interferes.
     if(el.tagName === "BUTTON"){
-      if(window.__ezCustomizeReplay) return;
       e.preventDefault();
       e.stopImmediatePropagation();
-      window.__ezCustomizeReplay = true;
-      setTimeout(function(){
-        try{ el.click(); }catch(err){}
-        window.__ezCustomizeReplay = false;
-      }, 0);
+      document.removeEventListener("click", bridgeHandler, true);
+      try{
+        el.click();
+      }finally{
+        document.addEventListener("click", bridgeHandler, true);
+      }
       return;
     }
-  }, true);
+  }
+
+  document.addEventListener("click", bridgeHandler, true);
 })();
 </script>
 <div id="customizePanel">

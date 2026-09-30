@@ -2260,6 +2260,21 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
       e.stopImmediatePropagation();
       return;
     }
+
+    // Replay all other Customize buttons through their original listeners.
+    // This keeps Phase 2, Custom Code, IDs, Save/Copy/Reset, Undo/Redo, etc.
+    // working even if another document-level capture listener interferes.
+    if(el.tagName === "BUTTON"){
+      if(window.__ezCustomizeReplay) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      window.__ezCustomizeReplay = true;
+      setTimeout(function(){
+        try{ el.click(); }catch(err){}
+        window.__ezCustomizeReplay = false;
+      }, 0);
+      return;
+    }
   }, true);
 })();
 </script>

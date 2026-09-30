@@ -3048,7 +3048,8 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
     pushHistory(); markUnsaved(); syncLogoControls();
   });
 
-  // Media  function currentMediaTarget(){
+  // Media
+  function currentMediaTarget(){
     if(!selectedFrame) return null;
     return selectedFrame.querySelector("img,video,iframe") || selectedFrame;
   }
@@ -4047,7 +4048,8 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
     if(c.contains("quote")) return "quote";
     if(c.contains("avatar")) return "avatar";
     if(c.contains("stat")) return "stat";
-    if(c.contains("btn")) return "btn";    if(c.contains("scheme-swatch")) return "scheme";
+    if(c.contains("btn")) return "btn";
+    if(c.contains("scheme-swatch")) return "scheme";
     if(c.contains("tab")) return "tab";
     if(c.contains("badge")) return "badge";
     if(c.contains("icon")) return "icon";

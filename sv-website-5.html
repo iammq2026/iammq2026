@@ -191,7 +191,7 @@ body:not(.ez-edit-on) .item-actions{display:none !important;}
   position:fixed;
   bottom:20px;
   right:20px;
-  z-index:2147483647;
+  z-index:2147483647 !important;
   pointer-events:auto !important;
   isolation:isolate;
   width:290px;
@@ -2223,6 +2223,47 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
 </div>
 
 <div id="ezUnsavedPill">Unsaved changes — click Save Settings to keep them</div>
+<script id="ez-customize-click-bridge">
+(function(){
+  "use strict";
+  // Dedicated editor-UI click bridge. This runs independently of the main
+  // customizer event routing so the Customize panel remains interactive even
+  // if a page-level editor handler captures clicks.
+  document.addEventListener("click", function(e){
+    var panel = document.getElementById("customizePanel");
+    if(!panel || !panel.contains(e.target)) return;
+
+    // Never let page/editor click-routing handlers consume Customize UI clicks.
+    e.stopPropagation();
+
+    var el = e.target.closest ? e.target.closest("button,input,select,textarea") : null;
+    if(!el) return;
+
+    if(el.id === "cpToggle"){
+      var body = document.getElementById("cpBody");
+      if(body){
+        var hidden = body.style.display === "none";
+        body.style.display = hidden ? "block" : "none";
+        el.textContent = hidden ? "Hide" : "Show";
+      }
+      e.stopImmediatePropagation();
+      return;
+    }
+
+    if(el.id === "cpCollapse"){
+      var collapsed = panel.classList.toggle("cp-collapsed");
+      el.textContent = collapsed ? "Expand <" : "Collapsed >";
+      el.setAttribute("aria-expanded", collapsed ? "false" : "true");
+      e.stopImmediatePropagation();
+      return;
+    }
+
+    if(el.id === "cpEditPage" && typeof window.ezSetEditMode === "function"){
+      window.ezSetEditMode();
+    }
+  }, true);
+})();
+</script>
 <div id="customizePanel">
 <div class="cp-head">
 <strong>Customize</strong>
@@ -2370,6 +2411,7 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
   // EDIT MODE TOGGLE
   // ============================================================
   function setEditMode(on){
+    if(typeof on === "undefined") on = !editOn;
     editOn = viewOnly ? false : on;
     body.classList.toggle("ez-edit-on", editOn);
     $("#cpEditPage").classList.toggle("active", editOn);
@@ -2377,6 +2419,7 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
     $all(".editable-text,.ez-editable-leaf").forEach(function(el){ el.setAttribute("contenteditable", editOn ? "true" : "false"); });
     if(!editOn){ hideAllFloating(); }
   }
+  window.ezSetEditMode = function(){ setEditMode(!editOn); };
   $("#cpEditPage").addEventListener("click", function(){ setEditMode(!editOn); });
 
   // Editable text inside a <label for="...">: the label's default behavior

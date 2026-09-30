@@ -2226,10 +2226,6 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
 <script id="ez-customize-click-bridge">
 (function(){
   "use strict";
-  // Protect only the editor-panel controls that otherwise lose the click to
-  // document-level editor routing. For all other controls, temporarily remove
-  // this bridge and replay the native click so the original addEventListener
-  // handlers receive the event exactly as they did in the working source file.
   function bridgeHandler(e){
     var panel = document.getElementById("customizePanel");
     if(!panel || !panel.contains(e.target)) return;
@@ -2266,15 +2262,12 @@ body.wildlife-scheme .text-forest{color:var(--w-ink)!important} body.wildlife-sc
       e.preventDefault();
       e.stopImmediatePropagation();
       document.removeEventListener("click", bridgeHandler, true);
-      try{
-        el.click();
-      }finally{
+      setTimeout(function(){
+        try{ el.click(); }catch(err){}
         document.addEventListener("click", bridgeHandler, true);
-      }
-      return;
+      }, 0);
     }
   }
-
   document.addEventListener("click", bridgeHandler, true);
 })();
 </script>

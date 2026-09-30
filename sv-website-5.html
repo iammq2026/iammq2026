@@ -191,7 +191,9 @@ body:not(.ez-edit-on) .item-actions{display:none !important;}
   position:fixed;
   bottom:20px;
   right:20px;
-  z-index:99999;
+  z-index:2147483200;
+  pointer-events:auto !important;
+  isolation:isolate;
   width:290px;
   background:#141414;
   border:1px solid rgba(255,255,255,0.14);
@@ -204,6 +206,7 @@ body:not(.ez-edit-on) .item-actions{display:none !important;}
   overflow-y:auto;
 }
 #customizePanel *{box-sizing:border-box;}
+#customizePanel button,#customizePanel input,#customizePanel select,#customizePanel textarea{pointer-events:auto !important;}
 #customizePanel .cp-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px;}
 #customizePanel .cp-head strong{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:#f2f2f0;}
 #customizePanel .cp-head-btns{display:flex;gap:6px;}
